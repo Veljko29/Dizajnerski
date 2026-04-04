@@ -28,7 +28,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-public class DrawingFrame extends JFrame{
+public class DrawingFrame extends JFrame {
 
 	private JFrame frame;
 	private DrawingView view = new DrawingView();
@@ -37,24 +37,25 @@ public class DrawingFrame extends JFrame{
 	private JPanel contentPane;
 	private final ButtonGroup tglbtnGroupShapes = new ButtonGroup();
 	
-	//default colors
+	// default colors
 	private Color color = Color.black;
 	private Color fillColor = Color.white;
 	
 	private Point startPoint = null;
 	private JButton btnModify;
 	private JButton btnDelete;
-	JToggleButton tglbtnSelect;
-	JToggleButton tglbtnCircle;
-	JToggleButton tglbtnPoint;
-	JToggleButton tglbtnLine;
-	JToggleButton tglbtnRectangle;
-	JToggleButton tglbtnDonut;
+	private JToggleButton tglbtnSelect;
+	private JToggleButton tglbtnCircle;
+	private JToggleButton tglbtnPoint;
+	private JToggleButton tglbtnLine;
+	private JToggleButton tglbtnRectangle;
+	private JToggleButton tglbtnDonut;
 	private JPanel panel_1;
 	private JButton btnUndo;
 	private JButton btnRedo;
 	private JPanel panel_2;
 	private JToggleButton tglbtnHexagon;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -74,7 +75,6 @@ public class DrawingFrame extends JFrame{
 	/**
 	 * Create the application.
 	 */
-
 	public DrawingFrame() {
 		setTitle("Veljko Antonic IT29/2021");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -160,7 +160,6 @@ public class DrawingFrame extends JFrame{
 		
 		btnDelete = new JButton("Delete");
 		btnDelete.setEnabled(false);
-		
 		GridBagConstraints gbc_btnDelete = new GridBagConstraints();
 		gbc_btnDelete.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnDelete.insets = new Insets(0, 0, 5, 0);
@@ -174,41 +173,45 @@ public class DrawingFrame extends JFrame{
 		gbc_tglbtnSelect.gridx = 0;
 		gbc_tglbtnSelect.gridy = 8;
 		panel.add(tglbtnSelect, gbc_tglbtnSelect);
-	
-		//controller = new DrawingController(model,new DrawingFrame());
-        //controller.setFrame(this);
-	view.setForeground(Color.WHITE);
-	view.setBackground(Color.WHITE);
-	contentPane.add(view, BorderLayout.CENTER);
-	controller = new DrawingController(model, this, view);
-	
-	panel_2 = new JPanel();
-	contentPane.add(panel_2, BorderLayout.NORTH);
-	
-	btnUndo = new JButton("Undo");
-	
-	btnRedo = new JButton("Redo");
-	GroupLayout gl_panel_2 = new GroupLayout(panel_2);
-	gl_panel_2.setHorizontalGroup(
-		gl_panel_2.createParallelGroup(Alignment.LEADING)
-			.addGroup(gl_panel_2.createSequentialGroup()
-				.addGap(89)
-				.addComponent(btnUndo, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addComponent(btnRedo, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE)
-				.addGap(422))
-	);
-	gl_panel_2.setVerticalGroup(
-		gl_panel_2.createParallelGroup(Alignment.LEADING)
-			.addGroup(gl_panel_2.createSequentialGroup()
-				.addGap(5)
-				.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
-					.addComponent(btnUndo)
-					.addComponent(btnRedo)))
-	);
-	panel_2.setLayout(gl_panel_2);
-	
+		
+		view.setForeground(Color.WHITE);
+		view.setBackground(Color.WHITE);
+		contentPane.add(view, BorderLayout.CENTER);
+		
+		panel_2 = new JPanel();
+		contentPane.add(panel_2, BorderLayout.NORTH);
+		
+		btnUndo = new JButton("Undo");
+		btnUndo.setEnabled(false);
+		
+		btnRedo = new JButton("Redo");
+		btnRedo.setEnabled(false);
+		
+		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
+		gl_panel_2.setHorizontalGroup(
+			gl_panel_2.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_2.createSequentialGroup()
+					.addGap(89)
+					.addComponent(btnUndo, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnRedo, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE)
+					.addGap(422))
+		);
+		gl_panel_2.setVerticalGroup(
+			gl_panel_2.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_2.createSequentialGroup()
+					.addGap(5)
+					.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnUndo)
+						.addComponent(btnRedo)))
+		);
+		panel_2.setLayout(gl_panel_2);
+		
+		  view.setModel(model);      //POVEZUJE MODEL I VIEW
+		    
+		    controller = new DrawingController(this, view);
 	}
+	
 	public DrawingView getView() {
 		return view;
 	}
@@ -216,40 +219,48 @@ public class DrawingFrame extends JFrame{
 	public void setController(DrawingController controller) {
 		this.controller = controller;
 	}
+	
 	public JButton getBtnModify() {
 		return btnModify;
 	}
+	
 	public JButton getBtnDelete() {
 		return btnDelete;
 	}
+	
 	public JToggleButton getTglBtnSelect() {
 		return tglbtnSelect;
 	}
+	
 	public JToggleButton getTglBtnPoint() {
 		return tglbtnPoint;
 	}
+	
 	public JToggleButton getTglBtnLine() {
 		return tglbtnLine;
 	}
+	
 	public JToggleButton getTglBtnRectangle() {
 		return tglbtnRectangle;
 	}
+	
 	public JToggleButton getTglBtnCircle() {
 		return tglbtnCircle;
 	}
+	
 	public JToggleButton getTglBtnDonut() {
 		return tglbtnDonut;
 	}
+	
 	public JToggleButton getTglBtnHexagon() {
 		return tglbtnHexagon;
 	}
+	
 	public JButton getUndoBtn() {
-	    return btnUndo; 
+		return btnUndo; 
 	}
 
 	public JButton getRedoBtn() {
-	    return btnRedo;
+		return btnRedo;
 	}
-	
 }
-	
