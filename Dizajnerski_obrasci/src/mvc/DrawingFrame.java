@@ -50,6 +50,10 @@ public class DrawingFrame extends JFrame {
 	private JToggleButton tglbtnLine;
 	private JToggleButton tglbtnRectangle;
 	private JToggleButton tglbtnDonut;
+	private JButton btnToFront;
+	private JButton btnToBack;
+	private JButton btnBringToBack;
+	private JButton btnBringToFront;
 	private JPanel panel_1;
 	private JButton btnUndo;
 	private JButton btnRedo;
@@ -187,25 +191,45 @@ public class DrawingFrame extends JFrame {
 		btnRedo = new JButton("Redo");
 		btnRedo.setEnabled(false);
 		
+		btnToFront = new JButton("ToFront");
+		
+		btnToBack = new JButton("ToBack");
+		btnBringToFront = new JButton("BringToFront");
+		
+		btnBringToBack = new JButton("BringToBack");
+		
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
-		gl_panel_2.setHorizontalGroup(
-			gl_panel_2.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_2.createSequentialGroup()
-					.addGap(89)
-					.addComponent(btnUndo, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(btnRedo, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE)
-					.addGap(422))
-		);
-		gl_panel_2.setVerticalGroup(
-			gl_panel_2.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_2.createSequentialGroup()
-					.addGap(5)
-					.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnUndo)
-						.addComponent(btnRedo)))
-		);
-		panel_2.setLayout(gl_panel_2);
+		 gl_panel_2.setHorizontalGroup(
+		            gl_panel_2.createParallelGroup(Alignment.LEADING)
+		                .addGroup(gl_panel_2.createSequentialGroup()
+		                    .addContainerGap()
+		                    .addComponent(btnUndo, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addComponent(btnRedo, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+		                    .addGap(18)
+		                    .addComponent(btnToFront)
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addComponent(btnToBack)
+		                    .addGap(18)
+		                    .addComponent(btnBringToFront)
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addComponent(btnBringToBack)
+		                    .addContainerGap(238, Short.MAX_VALUE))
+		        );
+		        gl_panel_2.setVerticalGroup(
+		            gl_panel_2.createParallelGroup(Alignment.LEADING)
+		                .addGroup(gl_panel_2.createSequentialGroup()
+		                    .addContainerGap()
+		                    .addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
+		                        .addComponent(btnUndo)
+		                        .addComponent(btnRedo)
+		                        .addComponent(btnToFront)
+		                        .addComponent(btnToBack)
+		                        .addComponent(btnBringToFront)
+		                        .addComponent(btnBringToBack))
+		                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+		        );
+			panel_2.setLayout(gl_panel_2);
 		
 		  view.setModel(model);      //POVEZUJE MODEL I VIEW
 		    
@@ -262,5 +286,11 @@ public class DrawingFrame extends JFrame {
 
 	public JButton getRedoBtn() {
 		return btnRedo;
+	}
+	public JButton getToFrontBtn() {
+		return btnToFront;
+	}
+	public JButton getToBackBtn() {
+		return btnToBack;
 	}
 }

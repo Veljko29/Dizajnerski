@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import javax.swing.JOptionPane;
@@ -20,6 +21,8 @@ import command.CmdUpdateLine;
 import command.CmdUpdatePoint;
 import command.CmdUpdateRectangle;
 import command.Command;
+import command.CmdToBack;
+import command.CmdToFront;
 import mvc.DlgCircle;
 import mvc.DlgDonut;
 import mvc.DlgHexagon;
@@ -208,17 +211,13 @@ public class DrawingController {
 			}
 		});
 
-		frame.getUndoBtn().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				undo();
-			}
-		});
-
-		frame.getRedoBtn().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				redo();
-			}
-		});
+		 // Undo/Redo dugmići
+        frame.getUndoBtn().addActionListener(e -> undo());
+        frame.getRedoBtn().addActionListener(e -> redo());
+        
+        // Z-order dugmići
+        frame.getToFrontBtn().addActionListener(e -> toFront());
+        frame.getToBackBtn().addActionListener(e -> toBack());
 	}
 
 	private void executeCommand(Command command) {
@@ -228,6 +227,15 @@ public class DrawingController {
 		updateButtons();
 		frame.repaint();
 	}
+	private List<Shape> getSelectedShapes() {
+        List<Shape> selected = new ArrayList<>();
+        for (Shape shape : model.getShapes()) {
+            if (shape.isSelected()) {
+                selected.add(shape);
+            }
+        }
+        return selected;
+    }
 
 	public void undo() {
 		if (!undoStack.isEmpty()) {
@@ -248,6 +256,34 @@ public class DrawingController {
 			frame.repaint();
 		}
 	}
+	// Z-order metode
+    public void toFront() {
+        List<Shape> selectedShapes = getSelectedShapes();
+        if (selectedShapes.size() == 1) {
+            Shape selected = selectedShapes.get(0);
+            if (selected != null && model.getShapes().size() >= 2) {
+                int index = model.indexOf(selected);
+                if (index < model.getShapes().size() - 1) {
+                    Command cmdToFront = new CmdToFront(model, selected);
+                    executeCommand(cmdToFront);
+                }
+            }
+        }
+    }
+    
+    public void toBack() {
+        List<Shape> selectedShapes = getSelectedShapes();
+        if (selectedShapes.size() == 1) {
+            Shape selected = selectedShapes.get(0);
+            if (selected != null && model.getShapes().size() >= 2) {
+                int index = model.indexOf(selected);
+                if (index > 0) {
+                    Command cmdToBack = new CmdToBack(model, selected);
+                    executeCommand(cmdToBack);
+                }
+            }
+        }
+    }
 
 	private void updateButtons() {
 		Shape selected = model.getSelected();
