@@ -25,6 +25,9 @@ public class DrawingModel {
 	public void add(Shape s) {
 		shapes.add(s);
 	}
+	public void add(int index, Shape s) {
+		shapes.add(index, s);
+	}
 	public void remove(Shape s) {
 		shapes.remove(s);
 	}
@@ -69,6 +72,9 @@ public class DrawingModel {
 				return;
 			}
 		}
+	}
+	public int indexOf(Shape shape) {
+		return shapes.indexOf(shape);
 	}
     
 }
