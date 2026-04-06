@@ -13,6 +13,8 @@ import javax.swing.JOptionPane;
 
 import adapter.HexagonAdapter;
 import command.CmdAddShape;
+import command.CmdBringToBack;
+import command.CmdBringToFront;
 import command.CmdRemoveShape;
 import command.CmdUpdateCircle;
 import command.CmdUpdateDonut;
@@ -218,6 +220,8 @@ public class DrawingController {
         // Z-order dugmići
         frame.getToFrontBtn().addActionListener(e -> toFront());
         frame.getToBackBtn().addActionListener(e -> toBack());
+        frame.getBringToFrontBtn().addActionListener(e -> bringToFront());
+        frame.getBringToBackBtn().addActionListener(e -> bringToBack());
 	}
 
 	private void executeCommand(Command command) {
@@ -280,6 +284,34 @@ public class DrawingController {
                 if (index > 0) {
                     Command cmdToBack = new CmdToBack(model, selected);
                     executeCommand(cmdToBack);
+                }
+            }
+        }
+    }
+    
+    public void bringToFront() {
+        List<Shape> selectedShapes = getSelectedShapes();
+        if (selectedShapes.size() == 1) {
+            Shape selected = selectedShapes.get(0);
+            if (selected != null && model.getShapes().size() >= 2) {
+                int index = model.indexOf(selected);
+                if (index < model.getShapes().size() - 1) {
+                    Command cmdBringToFront = new CmdBringToFront(model, selected);
+                    executeCommand(cmdBringToFront);
+                }
+            }
+        }
+    }
+    
+    public void bringToBack() {
+        List<Shape> selectedShapes = getSelectedShapes();
+        if (selectedShapes.size() == 1) {
+            Shape selected = selectedShapes.get(0);
+            if (selected != null && model.getShapes().size() >= 2) {
+                int index = model.indexOf(selected);
+                if (index > 0) {
+                    Command cmdBringToBack = new CmdBringToBack(model, selected);
+                    executeCommand(cmdBringToBack);
                 }
             }
         }

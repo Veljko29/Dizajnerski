@@ -293,4 +293,10 @@ public class DrawingFrame extends JFrame {
 	public JButton getToBackBtn() {
 		return btnToBack;
 	}
+	public JButton getBringToFrontBtn() {
+		return btnBringToFront;
+	}
+	public JButton getBringToBackBtn() {
+		return btnBringToBack;
+	}
 }
