@@ -317,13 +317,47 @@ public class DrawingController {
         }
     }
 
-	private void updateButtons() {
-		Shape selected = model.getSelected();
-		frame.getUndoBtn().setEnabled(!undoStack.isEmpty());
-		frame.getRedoBtn().setEnabled(!redoStack.isEmpty());
-		frame.getBtnModify().setEnabled(selected != null);
-		frame.getBtnDelete().setEnabled(selected != null);
-	}
+    private void updateButtons() {
+        List<Shape> selectedShapes = getSelectedShapes();
+        int selectedCount = selectedShapes.size();
+        int shapeCount = model.getShapes().size();
+        
+        // 1. Undo/redo dugmići
+        frame.getUndoBtn().setEnabled(!undoStack.isEmpty());
+        frame.getRedoBtn().setEnabled(!redoStack.isEmpty());
+        
+        // 2. Delete dugme
+        frame.getBtnDelete().setEnabled(selectedCount > 0);
+        
+        // 3. Modify dugme
+        frame.getBtnModify().setEnabled(selectedCount == 1);
+        
+        // 4. Z-order dugmići 
+        if (selectedCount == 1 && shapeCount >= 2) {
+            Shape selected = selectedShapes.get(0);
+            int index = model.indexOf(selected);
+            
+            boolean canMoveForward = index < shapeCount - 1;
+            frame.getToFrontBtn().setEnabled(canMoveForward);
+            frame.getBringToFrontBtn().setEnabled(canMoveForward);
+            
+            boolean canMoveBackward = index > 0;
+            frame.getToBackBtn().setEnabled(canMoveBackward);
+            frame.getBringToBackBtn().setEnabled(canMoveBackward);
+        } else {
+            disableZOrderButtons();
+        }
+        
+        frame.getBtnModify().setEnabled(selectedCount == 1);
+
+    }
+    private void disableZOrderButtons() {
+        frame.getToFrontBtn().setEnabled(false);
+        frame.getToBackBtn().setEnabled(false);
+        frame.getBringToFrontBtn().setEnabled(false);
+        frame.getBringToBackBtn().setEnabled(false);
+    }
+    
 
 	public void setColor(Color color) {
 		this.color = color;

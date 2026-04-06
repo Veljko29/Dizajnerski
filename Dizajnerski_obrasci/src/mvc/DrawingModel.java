@@ -12,8 +12,9 @@ import javax.swing.JPanel;
 import geometry.Point;
 import geometry.Shape;
 
-public class DrawingModel {
+public class DrawingModel implements DrawingObservable {
     private ArrayList<Shape> shapes = new ArrayList<Shape>();
+    private List<DrawingObserver> observers = new ArrayList<>();
     
     public DrawingModel() {
     }
@@ -75,6 +76,29 @@ public class DrawingModel {
 	}
 	public int indexOf(Shape shape) {
 		return shapes.indexOf(shape);
+	}
+
+
+	@Override
+	public void addObserver(DrawingObserver observer) {
+		observers.add(observer);
+		
+	}
+
+
+	@Override
+	public void removeObserver(DrawingObserver observer) {
+		observers.remove(observer);
+		
+	}
+
+
+	@Override
+	public void notifyObservers() {
+		 for (DrawingObserver observer : observers) {
+	            observer.update();
+	        }
+		
 	}
     
 }
