@@ -79,6 +79,7 @@ public class DrawingController {
 						frame.getBtnModify().setEnabled(false);
 						frame.getBtnDelete().setEnabled(false);
 					}
+					updateButtons();
 					frame.repaint();
 					return;
 				}
@@ -137,7 +138,7 @@ public class DrawingController {
 				if (shape != null) {
 					executeCommand(new CmdAddShape(model, shape));
 				}
-				model.deselectAll();
+				//model.deselectAll();
 				frame.getBtnModify().setEnabled(false);
 				frame.getBtnDelete().setEnabled(false);
 			}

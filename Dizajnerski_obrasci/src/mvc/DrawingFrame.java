@@ -192,11 +192,16 @@ public class DrawingFrame extends JFrame {
 		btnRedo.setEnabled(false);
 		
 		btnToFront = new JButton("ToFront");
+		btnToFront.setEnabled(false);
 		
 		btnToBack = new JButton("ToBack");
+		btnToBack.setEnabled(false);
+		
 		btnBringToFront = new JButton("BringToFront");
+		btnBringToFront.setEnabled(false);
 		
 		btnBringToBack = new JButton("BringToBack");
+		btnBringToBack.setEnabled(false);
 		
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
 		 gl_panel_2.setHorizontalGroup(
