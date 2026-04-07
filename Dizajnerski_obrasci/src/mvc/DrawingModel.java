@@ -25,12 +25,15 @@ public class DrawingModel implements DrawingObservable {
 	}
 	public void add(Shape s) {
 		shapes.add(s);
+		notifyObservers();
 	}
 	public void add(int index, Shape s) {
 		shapes.add(index, s);
+		notifyObservers();
 	}
 	public void remove(Shape s) {
 		shapes.remove(s);
+		notifyObservers();
 	}
 	public Shape getOneShape(int index) {
 		return shapes.get(index);
@@ -55,6 +58,7 @@ public class DrawingModel implements DrawingObservable {
 		for(int i = shapes.size() - 1; i >= 0; i--) {
 			shapes.get(i).setSelected(false);
 		}
+		notifyObservers();
 	}
 	
 	public Shape getSelected() {
@@ -77,21 +81,16 @@ public class DrawingModel implements DrawingObservable {
 	public int indexOf(Shape shape) {
 		return shapes.indexOf(shape);
 	}
-
-
 	@Override
 	public void addObserver(DrawingObserver observer) {
 		observers.add(observer);
 		
 	}
-
-
 	@Override
 	public void removeObserver(DrawingObserver observer) {
 		observers.remove(observer);
 		
 	}
-
 
 	@Override
 	public void notifyObservers() {
@@ -100,5 +99,17 @@ public class DrawingModel implements DrawingObservable {
 	        }
 		
 	}
+	// Za Z-order provere
+    public boolean canMoveForward(Shape shape) {
+        if (shape == null || shapes.size() < 2) return false;
+        int index = shapes.indexOf(shape);
+        return index >= 0 && index < shapes.size() - 1;
+    }
+    
+    public boolean canMoveBackward(Shape shape) {
+        if (shape == null || shapes.size() < 2) return false;
+        int index = shapes.indexOf(shape);
+        return index > 0;
+    }
     
 }

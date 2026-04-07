@@ -5,11 +5,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 import adapter.HexagonAdapter;
 import command.CmdAddShape;
@@ -31,6 +34,7 @@ import mvc.DlgHexagon;
 import mvc.DlgLine;
 import mvc.DlgPoint;
 import mvc.DlgRectangle;
+import strategy.SaveStrategy;
 import geometry.Circle;
 import geometry.Donut;
 import geometry.Line;
@@ -38,7 +42,7 @@ import geometry.Point;
 import geometry.Rectangle;
 import geometry.Shape;
 
-public class DrawingController {
+public class DrawingController implements DrawingObserver {
 	private DrawingModel model;
 	private DrawingFrame frame;
 	private DrawingView view;
@@ -47,6 +51,9 @@ public class DrawingController {
 	private Color fillColor = Color.white;
 	private Stack<Command> undoStack = new Stack<>();
 	private Stack<Command> redoStack = new Stack<>();
+	private SaveStrategy saveStrategy;
+	private List<Command> commandHistory = new ArrayList<>();
+	 private JTextArea logTextArea; 
 
 	public void setFrame(DrawingFrame frame) {
 		this.frame = frame;
@@ -60,7 +67,8 @@ public class DrawingController {
 		this.frame = frame;
 		this.view = frame.getView();
 		this.model = view.getModel();
-
+		 this.model.addObserver(this);
+		 //updateButtons();
 		view.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				Point clickPosition;
@@ -213,7 +221,13 @@ public class DrawingController {
 				frame.getView().repaint();
 			}
 		});
-
+		frame.getTglBtnPoint().addActionListener(e -> updateButtons());
+		frame.getTglBtnLine().addActionListener(e -> updateButtons());
+		frame.getTglBtnRectangle().addActionListener(e -> updateButtons());
+		frame.getTglBtnCircle().addActionListener(e -> updateButtons());
+		frame.getTglBtnDonut().addActionListener(e -> updateButtons());
+		frame.getTglBtnHexagon().addActionListener(e -> updateButtons());
+		frame.getTglBtnSelect().addActionListener(e -> updateButtons());
 		 // Undo/Redo dugmići
         frame.getUndoBtn().addActionListener(e -> undo());
         frame.getRedoBtn().addActionListener(e -> redo());
@@ -351,38 +365,91 @@ public class DrawingController {
         if (selectedCount == 1) {
             Shape selected = selectedShapes.get(0);
             if (selected instanceof Point || selected instanceof Line) {
-                // Point i Line nemaju fillColor
                 frame.getBtnInnerColor().setEnabled(false);
             } else {
-                // Ostali oblici (Rectangle, Circle, Donut, Hexagon) imaju fill
                 frame.getBtnInnerColor().setEnabled(true);
             }
+        } else {
+            frame.getBtnInnerColor().setEnabled(true); 
         }
         
         if (selectedCount == 1) {
             Shape selected = selectedShapes.get(0);
-            
-            // Postavi edge boju dugmeta
-            Color edgeColor = selected.getColor();
-            if (edgeColor != null) {
-                frame.getBtnEdgeColor().setBackground(edgeColor);
-            }
-            
-            // Postavi fill boju dugmeta (samo za oblike koji imaju fill)
-            if (!(selected instanceof Point) && !(selected instanceof Line)) {
-                Color fillColor = getFillColorFromShape(selected);
-                if (fillColor != null) {
-                    frame.getBtnInnerColor().setBackground(fillColor);
-                }
-                frame.getBtnInnerColor().setEnabled(true);
-            } else {
+            if (selected instanceof Point || selected instanceof Line) {
                 frame.getBtnInnerColor().setEnabled(false);
+            } else {
+                frame.getBtnInnerColor().setEnabled(true);
+            }
+        } else {
+            if (frame.getTglBtnLine().isSelected() || frame.getTglBtnPoint().isSelected()) {
+                frame.getBtnInnerColor().setEnabled(false);
+            } else {
+                frame.getBtnInnerColor().setEnabled(true);
             }
         }
         frame.getBtnModify().setEnabled(selectedCount == 1);
         
         frame.getBtnModify().setEnabled(selectedCount == 1);
 
+    }
+    @Override
+    public void update() {
+        updateButtons();
+        frame.repaint();
+    }
+    private void logMessage(String message) {
+        if (logTextArea != null) {
+            SwingUtilities.invokeLater(() -> {
+                logTextArea.append(message + "\n");
+                logTextArea.setCaretPosition(logTextArea.getDocument().getLength());
+            });
+        }
+    }
+//Save / load metode
+    
+    public void saveToFile(String filePath) {
+        if (saveStrategy == null) {
+            JOptionPane.showMessageDialog(frame, "Save strategy not set!");
+            return;
+        }
+        
+        try {
+            saveStrategy.save(model, filePath);
+            logMessage("SAVED to: " + filePath);
+            JOptionPane.showMessageDialog(frame, "Saved successfully to: " + filePath);
+        } catch (IOException e) {
+            logMessage("ERROR saving: " + e.getMessage());
+            JOptionPane.showMessageDialog(frame, "Error saving: " + e.getMessage(), 
+                "Save Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    public void loadFromFile(String filePath) {
+        if (saveStrategy == null) {
+            JOptionPane.showMessageDialog(frame, "Save strategy not set!");
+            return;
+        }
+        
+        try {
+            DrawingModel loadedModel = saveStrategy.load(filePath);
+            
+            this.model = loadedModel;
+            view.setModel(model);
+            model.addObserver(this);
+            
+            // Očisti istoriju
+            undoStack.clear();
+            redoStack.clear();
+            commandHistory.clear();
+            
+            logMessage("LOADED from: " + filePath);
+            update();
+            JOptionPane.showMessageDialog(frame, "Loaded successfully from: " + filePath);
+        } catch (Exception e) {
+            logMessage("ERROR loading: " + e.getMessage());
+            JOptionPane.showMessageDialog(frame, "Error loading: " + e.getMessage(), 
+                "Load Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
     private void disableZOrderButtons() {
         frame.getToFrontBtn().setEnabled(false);
@@ -432,4 +499,7 @@ public class DrawingController {
 	public void setFillColor(Color fillColor) {
 		this.fillColor = fillColor;
 	}
+	public void setSaveStrategy(SaveStrategy saveStrategy) {
+        this.saveStrategy = saveStrategy;
+    }
 }
