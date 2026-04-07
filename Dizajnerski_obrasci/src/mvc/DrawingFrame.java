@@ -5,12 +5,18 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
+import java.awt.Dimension;
 
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -59,27 +65,19 @@ public class DrawingFrame extends JFrame {
 	private JButton btnRedo;
 	private JPanel panel_2;
 	private JToggleButton tglbtnHexagon;
+	private JButton btnEdgeColor;
+    private JButton btnInnerColor;
+    private JLabel lblEdgeColor;
+    private JLabel lblInnerColor;
 	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					DrawingFrame window = new DrawingFrame();
-					window.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	public DrawingFrame() {
+        initialize();
+    }
 
 	/**
 	 * Create the application.
 	 */
-	public DrawingFrame() {
+	private void initialize() {
 		setTitle("Veljko Antonic IT29/2021");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(20, 20, 705, 403);
@@ -239,7 +237,79 @@ public class DrawingFrame extends JFrame {
 		  view.setModel(model);      //POVEZUJE MODEL I VIEW
 		    
 		    controller = new DrawingController(this, view);
-	}
+	 // panel za boje
+    JPanel colorPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    colorPanel.setBorder(BorderFactory.createTitledBorder("Colors"));
+
+    btnEdgeColor = new JButton("");
+    btnEdgeColor.setBackground(color);
+    btnEdgeColor.setForeground(Color.WHITE);
+    btnEdgeColor.setPreferredSize(new Dimension(100, 30));
+
+    btnInnerColor = new JButton("");
+    btnInnerColor.setBackground(fillColor);
+    btnInnerColor.setForeground(Color.WHITE);
+    btnInnerColor.setPreferredSize(new Dimension(100, 30));
+
+    lblEdgeColor = new JLabel("Edge:");
+    lblEdgeColor.setOpaque(true);
+    lblEdgeColor.setPreferredSize(new Dimension(50, 25));
+
+    lblInnerColor = new JLabel("Fill:");
+    lblInnerColor.setOpaque(true);
+    lblInnerColor.setPreferredSize(new Dimension(50, 25));
+
+    colorPanel.add(lblEdgeColor);
+    colorPanel.add(btnEdgeColor);
+    colorPanel.add(Box.createHorizontalStrut(10));
+    colorPanel.add(lblInnerColor);
+    colorPanel.add(btnInnerColor);
+
+    contentPane.add(colorPanel, BorderLayout.SOUTH);
+    
+   /* view.setForeground(Color.WHITE);
+    view.setBackground(Color.WHITE);
+    view.setModel(model);
+    
+    controller = new DrawingController(this, view);
+    
+    contentPane.add(view, BorderLayout.CENTER);
+    */
+    btnEdgeColor.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Color newColor = JColorChooser.showDialog(
+                DrawingFrame.this, 
+                "Choose Edge Color", 
+                color
+            );
+            if (newColor != null) {
+                color = newColor;
+                btnEdgeColor.setBackground(color);
+                //lblEdgeColor.setBackground(color);
+                controller.setColor(color); 
+                controller.applyEdgeColorToSelected(); 
+            }
+        }
+    });
+
+    btnInnerColor.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Color newColor = JColorChooser.showDialog(
+                DrawingFrame.this, 
+                "Choose Fill Color", 
+                fillColor
+            );
+            if (newColor != null) {
+                fillColor = newColor;
+                btnInnerColor.setBackground(fillColor);
+                controller.setFillColor(fillColor);  
+                controller.applyFillColorToSelected(); 
+            }
+        }
+    });
+}
 	
 	public DrawingView getView() {
 		return view;
@@ -303,5 +373,13 @@ public class DrawingFrame extends JFrame {
 	}
 	public JButton getBringToBackBtn() {
 		return btnBringToBack;
+	}
+	public JButton getBtnEdgeColor() {
+		return btnEdgeColor;
+	}
+
+
+	public JButton getBtnInnerColor() {
+		return btnInnerColor;
 	}
 }

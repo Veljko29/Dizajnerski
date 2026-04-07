@@ -69,26 +69,6 @@ public class Donut extends Circle {
             g.drawRect(cx - 2, cy + r - 2, 4, 4);
         }
     }
-    
-    @Override
-    /*public void fill(Graphics g) {
-        // Prazno – sve je u draw()
-    }
-    
-    public Donut clone(Donut donut) {
-        donut.getCenter().setX(this.getCenter().getX());
-        donut.getCenter().setY(this.getCenter().getY());
-        try {
-            donut.setRadius(this.getRadius());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        donut.setInnerRadius(this.getInnerRadius());
-        donut.setColor(this.getColor());
-        donut.setFillColor(this.getFillColor());
-        return donut;
-    }
-    */
     public double area() {
         return super.area() - innerRadius * innerRadius * Math.PI;
     }

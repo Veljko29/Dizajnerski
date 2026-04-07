@@ -348,6 +348,38 @@ public class DrawingController {
         } else {
             disableZOrderButtons();
         }
+        if (selectedCount == 1) {
+            Shape selected = selectedShapes.get(0);
+            if (selected instanceof Point || selected instanceof Line) {
+                // Point i Line nemaju fillColor
+                frame.getBtnInnerColor().setEnabled(false);
+            } else {
+                // Ostali oblici (Rectangle, Circle, Donut, Hexagon) imaju fill
+                frame.getBtnInnerColor().setEnabled(true);
+            }
+        }
+        
+        if (selectedCount == 1) {
+            Shape selected = selectedShapes.get(0);
+            
+            // Postavi edge boju dugmeta
+            Color edgeColor = selected.getColor();
+            if (edgeColor != null) {
+                frame.getBtnEdgeColor().setBackground(edgeColor);
+            }
+            
+            // Postavi fill boju dugmeta (samo za oblike koji imaju fill)
+            if (!(selected instanceof Point) && !(selected instanceof Line)) {
+                Color fillColor = getFillColorFromShape(selected);
+                if (fillColor != null) {
+                    frame.getBtnInnerColor().setBackground(fillColor);
+                }
+                frame.getBtnInnerColor().setEnabled(true);
+            } else {
+                frame.getBtnInnerColor().setEnabled(false);
+            }
+        }
+        frame.getBtnModify().setEnabled(selectedCount == 1);
         
         frame.getBtnModify().setEnabled(selectedCount == 1);
 
@@ -357,6 +389,39 @@ public class DrawingController {
         frame.getToBackBtn().setEnabled(false);
         frame.getBringToFrontBtn().setEnabled(false);
         frame.getBringToBackBtn().setEnabled(false);
+    }
+ // Za edge boju
+    public void applyEdgeColorToSelected() {
+        List<Shape> selectedShapes = getSelectedShapes();
+        if (selectedShapes.isEmpty()) return;
+        
+        for (Shape shape : selectedShapes) {
+            shape.setColor(this.color);
+        }
+        view.repaint();
+    }
+
+    // Za fill boju  
+    public void applyFillColorToSelected() {
+        List<Shape> selectedShapes = getSelectedShapes();
+        if (selectedShapes.isEmpty()) return;
+        
+        for (Shape shape : selectedShapes) {
+            shape.setFillColor(this.fillColor);
+        }
+        view.repaint();
+    }
+    private Color getFillColorFromShape(Shape shape) {
+        if (shape instanceof Circle) {
+            return ((Circle) shape).getFillColor();
+        } else if (shape instanceof Rectangle) {
+            return ((Rectangle) shape).getFillColor();
+        } else if (shape instanceof Donut) {
+            return ((Donut) shape).getFillColor();
+        } else if (shape instanceof HexagonAdapter) {
+            return ((HexagonAdapter) shape).getFillColor();
+        }
+        return null;
     }
     
 
