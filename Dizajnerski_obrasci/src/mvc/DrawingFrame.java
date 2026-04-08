@@ -10,6 +10,7 @@ import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -19,11 +20,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import geometry.Point;
+import strategy.SerializationStrategy;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -69,6 +73,13 @@ public class DrawingFrame extends JFrame {
     private JButton btnInnerColor;
     private JLabel lblEdgeColor;
     private JLabel lblInnerColor;
+    
+    private JTextArea logTextArea;
+    private JScrollPane logScrollPane;
+    private JButton btnSaveBinary;
+    private JButton btnLoadBinary;
+    private JButton btnSaveText;
+    private JButton btnLoadText;
 	
 	public DrawingFrame() {
         initialize();
@@ -235,6 +246,28 @@ public class DrawingFrame extends JFrame {
 			panel_2.setLayout(gl_panel_2);
 		
 		  view.setModel(model);      //POVEZUJE MODEL I VIEW
+		  
+		  JPanel logPanel = new JPanel(new BorderLayout(5, 5));
+	        logTextArea = new JTextArea(15, 30);
+	        logTextArea.setEditable(false);
+	        logScrollPane = new JScrollPane(logTextArea);
+	        
+	        JPanel fileButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+	        btnSaveBinary = new JButton("Save Binary");
+	        btnLoadBinary = new JButton("Load Binary");
+	        btnSaveText = new JButton("Save Text");
+	        btnLoadText = new JButton("Load Text");
+	        
+	        fileButtonPanel.add(btnSaveBinary);
+	        fileButtonPanel.add(btnLoadBinary);
+	        fileButtonPanel.add(btnSaveText);
+	        fileButtonPanel.add(btnLoadText);
+	        
+	        logPanel.add(new JLabel("Command Log:"), BorderLayout.NORTH);
+	        logPanel.add(logScrollPane, BorderLayout.CENTER);
+	        logPanel.add(fileButtonPanel, BorderLayout.SOUTH);
+	        
+	        contentPane.add(logPanel, BorderLayout.EAST);
 		    
 		    controller = new DrawingController(this, view);
 	 // panel za boje
@@ -309,7 +342,40 @@ public class DrawingFrame extends JFrame {
             }
         }
     });
+    setupFileButtonListeners();
 }
+	 private void setupFileButtonListeners() {
+	        btnSaveBinary.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                JFileChooser fileChooser = new JFileChooser();
+	                fileChooser.setDialogTitle("Save Drawing (Binary)");
+	                fileChooser.setSelectedFile(new java.io.File("drawing.ser"));
+	                
+	                int userSelection = fileChooser.showSaveDialog(DrawingFrame.this);
+	                if (userSelection == JFileChooser.APPROVE_OPTION) {
+	                    String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+	                    controller.setSaveStrategy(new SerializationStrategy());
+	                    controller.saveToFile(filePath);
+	                }
+	            }
+	        });
+	        
+	        btnLoadBinary.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                JFileChooser fileChooser = new JFileChooser();
+	                fileChooser.setDialogTitle("Load Drawing (Binary)");
+	                
+	                int userSelection = fileChooser.showOpenDialog(DrawingFrame.this);
+	                if (userSelection == JFileChooser.APPROVE_OPTION) {
+	                    String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+	                    controller.setSaveStrategy(new SerializationStrategy());
+	                    controller.loadFromFile(filePath);
+	                }
+	            }
+	        });
+	 }
 	
 	public DrawingView getView() {
 		return view;
@@ -382,4 +448,19 @@ public class DrawingFrame extends JFrame {
 	public JButton getBtnInnerColor() {
 		return btnInnerColor;
 	}
+	 public JButton getBtnSaveBinary() {
+	        return btnSaveBinary;
+	    }
+
+	    public JButton getBtnLoadBinary() {
+	        return btnLoadBinary;
+	    }
+
+	    public JButton getBtnSaveText() {
+	        return btnSaveText;
+	    }
+
+	    public JButton getBtnLoadText() {
+	        return btnLoadText;
+	    }
 }
