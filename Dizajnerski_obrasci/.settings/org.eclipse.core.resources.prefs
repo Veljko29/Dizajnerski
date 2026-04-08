@@ -2,3 +2,4 @@ eclipse.preferences.version=1
 encoding//src/mvc/DrawingController.java=UTF-8
 encoding//src/mvc/DrawingFrame.java=UTF-8
 encoding//src/mvc/DrawingModel.java=UTF-8
+encoding//src/strategy/CommandLogStrategy.java=UTF-8

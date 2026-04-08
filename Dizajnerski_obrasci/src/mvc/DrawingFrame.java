@@ -28,6 +28,7 @@ import javax.swing.border.EmptyBorder;
 
 import geometry.Point;
 import strategy.SerializationStrategy;
+import strategy.TextLogStrategy;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -375,80 +376,127 @@ public class DrawingFrame extends JFrame {
 	                }
 	            }
 	        });
+	        btnSaveText.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                JFileChooser fileChooser = new JFileChooser();
+	                fileChooser.setDialogTitle("Save Command Log (Text)");
+	                fileChooser.setSelectedFile(new java.io.File("log.txt"));
+	                
+	                int userSelection = fileChooser.showSaveDialog(DrawingFrame.this);
+	                if (userSelection == JFileChooser.APPROVE_OPTION) {
+	                    String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+	                    controller.setSaveStrategy(new TextLogStrategy());
+	                    controller.saveToFile(filePath);
+	                }
+	            }
+	        });
+	        
+	        btnLoadText.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                JFileChooser fileChooser = new JFileChooser();
+	                fileChooser.setDialogTitle("Load and Execute Log (Text)");
+	                
+	                int userSelection = fileChooser.showOpenDialog(DrawingFrame.this);
+	                if (userSelection == JFileChooser.APPROVE_OPTION) {
+	                    String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+	                    controller.setSaveStrategy(new TextLogStrategy());
+	                    controller.loadFromFile(filePath);
+	                }
+	            }
+	        });
 	 }
 	
-	public DrawingView getView() {
-		return view;
-	}
+	// === GETTER METODE ===
+	    public DrawingView getView() {
+	        return view;
+	    }
 
-	public void setController(DrawingController controller) {
-		this.controller = controller;
-	}
-	
-	public JButton getBtnModify() {
-		return btnModify;
-	}
-	
-	public JButton getBtnDelete() {
-		return btnDelete;
-	}
-	
-	public JToggleButton getTglBtnSelect() {
-		return tglbtnSelect;
-	}
-	
-	public JToggleButton getTglBtnPoint() {
-		return tglbtnPoint;
-	}
-	
-	public JToggleButton getTglBtnLine() {
-		return tglbtnLine;
-	}
-	
-	public JToggleButton getTglBtnRectangle() {
-		return tglbtnRectangle;
-	}
-	
-	public JToggleButton getTglBtnCircle() {
-		return tglbtnCircle;
-	}
-	
-	public JToggleButton getTglBtnDonut() {
-		return tglbtnDonut;
-	}
-	
-	public JToggleButton getTglBtnHexagon() {
-		return tglbtnHexagon;
-	}
-	
-	public JButton getUndoBtn() {
-		return btnUndo; 
-	}
+	    public void setController(DrawingController controller) {
+	        this.controller = controller;
+	    }
+	    
+	    public JButton getBtnModify() {
+	        return btnModify;
+	    }
+	    
+	    public JButton getBtnDelete() {
+	        return btnDelete;
+	    }
+	    
+	    public JToggleButton getTglBtnSelect() {
+	        return tglbtnSelect;
+	    }
+	    
+	    public JToggleButton getTglBtnPoint() {
+	        return tglbtnPoint;
+	    }
+	    
+	    public JToggleButton getTglBtnLine() {
+	        return tglbtnLine;
+	    }
+	    
+	    public JToggleButton getTglBtnRectangle() {
+	        return tglbtnRectangle;
+	    }
+	    
+	    public JToggleButton getTglBtnCircle() {
+	        return tglbtnCircle;
+	    }
+	    
+	    public JToggleButton getTglBtnDonut() {
+	        return tglbtnDonut;
+	    }
+	    
+	    public JToggleButton getTglBtnHexagon() {
+	        return tglbtnHexagon;
+	    }
+	    
+	    public JButton getUndoBtn() {
+	        return btnUndo; 
+	    }
 
-	public JButton getRedoBtn() {
-		return btnRedo;
-	}
-	public JButton getToFrontBtn() {
-		return btnToFront;
-	}
-	public JButton getToBackBtn() {
-		return btnToBack;
-	}
-	public JButton getBringToFrontBtn() {
-		return btnBringToFront;
-	}
-	public JButton getBringToBackBtn() {
-		return btnBringToBack;
-	}
-	public JButton getBtnEdgeColor() {
-		return btnEdgeColor;
-	}
-
-
-	public JButton getBtnInnerColor() {
-		return btnInnerColor;
-	}
-	 public JButton getBtnSaveBinary() {
+	    public JButton getRedoBtn() {
+	        return btnRedo;
+	    }
+	    
+	    public JButton getToFrontBtn() {
+	        return btnToFront;
+	    }
+	    
+	    public JButton getToBackBtn() {
+	        return btnToBack;
+	    }
+	    
+	    public JButton getBringToFrontBtn() {
+	        return btnBringToFront;
+	    }
+	    
+	    public JButton getBringToBackBtn() {
+	        return btnBringToBack;
+	    }
+	    
+	    public Color getColor() {
+	        return color;
+	    }
+	    
+	    public Color getFillColor() {
+	        return fillColor;
+	    }
+	    
+	    public void setColor(Color color) {
+	        this.color = color;
+	        btnEdgeColor.setBackground(color);
+	        lblEdgeColor.setBackground(color);
+	    }
+	    
+	    public void setFillColor(Color fillColor) {
+	        this.fillColor = fillColor;
+	        btnInnerColor.setBackground(fillColor);
+	        lblInnerColor.setBackground(fillColor);
+	    }
+	    public JButton getBtnSaveBinary() {
 	        return btnSaveBinary;
 	    }
 
@@ -463,4 +511,12 @@ public class DrawingFrame extends JFrame {
 	    public JButton getBtnLoadText() {
 	        return btnLoadText;
 	    }
+	    public JButton getBtnEdgeColor() {
+			return btnEdgeColor;
+		}
+
+
+		public JButton getBtnInnerColor() {
+			return btnInnerColor;
+		}
 }

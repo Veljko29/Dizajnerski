@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
@@ -35,6 +36,8 @@ import mvc.DlgLine;
 import mvc.DlgPoint;
 import mvc.DlgRectangle;
 import strategy.SaveStrategy;
+import strategy.SerializationStrategy;
+import strategy.TextLogStrategy;
 import geometry.Circle;
 import geometry.Donut;
 import geometry.Line;
@@ -451,6 +454,60 @@ public class DrawingController implements DrawingObserver {
                 "Load Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    public void saveBinary(String filePath) {
+        setSaveStrategy(new SerializationStrategy());
+        saveToFile(filePath);
+    }
+    
+    public void loadBinary(String filePath) {
+        setSaveStrategy(new SerializationStrategy());
+        loadFromFile(filePath);
+    }
+    
+    public void saveText(String filePath) {
+        setSaveStrategy(new TextLogStrategy());
+        saveToFile(filePath);
+    }
+    
+    public void loadText(String filePath) {
+        setSaveStrategy(new TextLogStrategy());
+        loadFromFile(filePath);
+    }
+ // Getteri za log i istoriju
+    public List<Command> getCommandHistory() {
+        return new ArrayList<>(commandHistory);
+    }
+    
+    public List<String> getLogEntries() {
+        List<String> entries = new ArrayList<>();
+        for (Command cmd : commandHistory) {
+            entries.add(cmd.toString());
+        }
+        return entries;
+    }
+    
+ //log metode
+    
+    private void logCommand(Command command) {
+        String logEntry = String.format("[%s] %s", 
+            new Date().toString().substring(11, 19), // HH:mm:ss
+            command.toString());
+        logMessage(logEntry);
+    }
+    
+    private void logSelection() {
+        List<Shape> selected = getSelectedShapes();
+        if (!selected.isEmpty()) {
+            String shapes = "";
+            for (Shape shape : selected) {
+                shapes += shape.getClass().getSimpleName() + " ";
+            }
+            logMessage("SELECTED: " + selected.size() + " shape(s): " + shapes.trim());
+        } else {
+            logMessage("DESELECTED: All shapes");
+        }
+    }
+    
     private void disableZOrderButtons() {
         frame.getToFrontBtn().setEnabled(false);
         frame.getToBackBtn().setEnabled(false);
