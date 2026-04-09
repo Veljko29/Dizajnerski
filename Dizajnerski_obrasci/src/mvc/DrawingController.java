@@ -82,18 +82,35 @@ public class DrawingController implements DrawingObserver {
 					return;
 				}
 
-				if (frame.getTglBtnSelect().isSelected()) {
-					if (model.trySelect(clickPosition)) {
-						frame.getBtnModify().setEnabled(true);
-						frame.getBtnDelete().setEnabled(true);
-					} else {
-						frame.getBtnModify().setEnabled(false);
-						frame.getBtnDelete().setEnabled(false);
-					}
-					updateButtons();
-					frame.repaint();
-					return;
-				}
+				 // SELECT LOGIKA 
+    	        if(frame.getTglBtnSelect().isSelected()) {
+    	            boolean ctrlPressed = e.isControlDown();
+    	            
+    	            // Deselectuj sve ako nije Ctrl
+    	            if (!ctrlPressed) {
+    	                model.deselectAll();
+    	            }
+    	            
+    	            boolean shapeSelected = false;
+    	            for (int i = model.getShapes().size() - 1; i >= 0; i--) {
+    	                Shape shape = model.getShapes().get(i);
+    	                if (shape.contains(clickPosition.getX(), clickPosition.getY())) {
+    	                    if (ctrlPressed) {
+    	                        shape.setSelected(!shape.isSelected());
+    	                    } else {
+    	                        shape.setSelected(true);
+    	                    }
+    	                    shapeSelected = true;
+    	                    break;
+    	                }
+    	            }
+    	            
+    	            if (shapeSelected) {
+    	                model.notifyObservers();
+    	                logSelection();
+    	            }
+    	            return;
+    	        }
 
 				Shape shape = null;
 				if (frame.getTglBtnPoint().isSelected()) {
@@ -244,10 +261,14 @@ public class DrawingController implements DrawingObserver {
 
 	private void executeCommand(Command command) {
 		command.execute();
-		undoStack.push(command);
-		redoStack.clear();
-		updateButtons();
-		frame.repaint();
+        undoStack.push(command);
+        redoStack.clear();
+       
+        commandHistory.add(command);
+        logCommand(command);
+        
+        updateButtons();
+        frame.repaint();
 	}
 	private List<Shape> getSelectedShapes() {
         List<Shape> selected = new ArrayList<>();
@@ -559,4 +580,8 @@ public class DrawingController implements DrawingObserver {
 	public void setSaveStrategy(SaveStrategy saveStrategy) {
         this.saveStrategy = saveStrategy;
     }
+	  public void setLogTextArea(JTextArea logTextArea) {
+	        this.logTextArea = logTextArea;
+	    }
+
 }

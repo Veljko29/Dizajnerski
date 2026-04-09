@@ -271,6 +271,7 @@ public class DrawingFrame extends JFrame {
 	        contentPane.add(logPanel, BorderLayout.EAST);
 		    
 		    controller = new DrawingController(this, view);
+		    controller.setLogTextArea(logTextArea);
 	 // panel za boje
     JPanel colorPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     colorPanel.setBorder(BorderFactory.createTitledBorder("Colors"));
