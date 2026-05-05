@@ -70,6 +70,7 @@ public class DrawingModel implements DrawingObservable {
             deselectAll();
         }
         
+        // Prođi kroz sve oblike od najvišeg ka najnižem (Z-order)
         for (int i = shapes.size() - 1; i >= 0; i--) {
             Shape shape = shapes.get(i);
             if (shape.contains(p.getX(), p.getY())) {
@@ -82,7 +83,6 @@ public class DrawingModel implements DrawingObservable {
                 }
                 shapeSelected = true;
                 
-                // Ako nije Ctrl, izađi posle prvog (single selection)
                 if (!ctrlPressed) {
                     break;
                 }

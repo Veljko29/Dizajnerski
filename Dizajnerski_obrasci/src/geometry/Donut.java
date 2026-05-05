@@ -44,7 +44,6 @@ public class Donut extends Circle {
         int r  = getRadius();
         int ir = innerRadius;
 
-        // Napravi "prsten" kao razliku spoljašnjeg i unutrašnjeg kruga
         java.awt.geom.Ellipse2D outer = new java.awt.geom.Ellipse2D.Double(cx - r,  cy - r,  r  * 2, r  * 2);
         java.awt.geom.Ellipse2D inner = new java.awt.geom.Ellipse2D.Double(cx - ir, cy - ir, ir * 2, ir * 2);
 

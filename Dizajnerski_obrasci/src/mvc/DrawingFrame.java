@@ -255,8 +255,10 @@ public class DrawingFrame extends JFrame {
 	        
 	        JPanel fileButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
 	        btnSaveBinary = new JButton("Save Binary");
+	        btnSaveBinary.setEnabled(false);
 	        btnLoadBinary = new JButton("Load Binary");
 	        btnSaveText = new JButton("Save Text");
+	        btnSaveText.setEnabled(false);
 	        btnLoadText = new JButton("Load Text");
 	        
 	        fileButtonPanel.add(btnSaveBinary);

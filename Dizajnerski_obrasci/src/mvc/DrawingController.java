@@ -173,17 +173,21 @@ public class DrawingController implements DrawingObserver {
 		});
 
 		frame.getBtnDelete().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				if (JOptionPane.showConfirmDialog(null, "Do you really want to delete selected shape?", "Prompt",
-						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
-					Shape shape = model.getSelected();
-					if (shape != null) {
-						executeCommand(new CmdRemoveShape(model, shape));
-						frame.getBtnModify().setEnabled(false);
-						frame.getBtnDelete().setEnabled(false);
-					}
-				}
-			}
+		    public void actionPerformed(ActionEvent arg0) {
+		        List<Shape> selectedShapes = getSelectedShapes();
+		        if (selectedShapes.isEmpty()) return;
+		        
+		        if (JOptionPane.showConfirmDialog(null, "Do you really want to delete selected shape(s)?", "Prompt",
+		                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
+		            
+		            for (Shape shape : selectedShapes) {
+		                executeCommand(new CmdRemoveShape(model, shape));
+		            }
+		            
+		            frame.getBtnModify().setEnabled(false);
+		            frame.getBtnDelete().setEnabled(false);
+		        }
+		    }
 		});
 
 		frame.getBtnModify().addActionListener(new ActionListener() {
@@ -360,6 +364,9 @@ public class DrawingController implements DrawingObserver {
         List<Shape> selectedShapes = getSelectedShapes();
         int selectedCount = selectedShapes.size();
         int shapeCount = model.getShapes().size();
+        boolean hasShapes = shapeCount > 0;
+        frame.getBtnSaveBinary().setEnabled(hasShapes);
+        frame.getBtnSaveText().setEnabled(hasShapes);
         
         // 1. Undo/redo dugmići
         frame.getUndoBtn().setEnabled(!undoStack.isEmpty());

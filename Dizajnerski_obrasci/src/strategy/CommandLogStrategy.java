@@ -49,10 +49,8 @@ public class CommandLogStrategy implements SaveStrategy {
                         if (response == JOptionPane.YES_OPTION) {
                             command.execute();
                             
-                            // Sačuvaj referencu ako je AddShape komanda
                             if (command instanceof CmdAddShape) {
                                 CmdAddShape addCmd = (CmdAddShape) command;
-                                // Možeš koristiti hash code ili neki ID
                                 String key = addCmd.getShape().toString();
                                 shapeMap.put(key, addCmd.getShape());
                             }
@@ -258,10 +256,7 @@ public class CommandLogStrategy implements SaveStrategy {
         
         return null;
     }
-    
-    // ==================== OSTALE PARSER METODE OSTAJU ISTE ====================
-    // (parsePoint, parseLine, parseRectangle, parseCircle, parseDonut, parseHexagon,
-    //  extractInt, extractColor, extractInnerColor - sve isto kao pre)
+   
     
     private Point parsePoint(String line) {
         int x = extractInt(line, "x=");

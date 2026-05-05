@@ -5,7 +5,6 @@ import geometry.Shape;
 import java.io.*;
 import java.util.ArrayList;
 
-// Strategija 1: Serijalizacija (binary)
 public class SerializationStrategy implements SaveStrategy {
     @Override
     public void save(DrawingModel model, String filePath) throws IOException {
